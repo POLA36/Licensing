@@ -10,4 +10,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ServerRepo extends JpaRepository<Server, Long> {
+    Server findByMacAdresse(String macAdresse);
 }

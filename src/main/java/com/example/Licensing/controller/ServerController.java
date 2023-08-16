@@ -4,6 +4,7 @@ import com.example.Licensing.ReponseMessage.ResponseMessage;
 import com.example.Licensing.model.entitie.Server;
 import com.example.Licensing.service.IServerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import java.net.SocketException;
@@ -13,7 +14,7 @@ import java.util.Date;
  * @author LITA POLA ABDEL AZIZ - litapo489@gmail.com
  * */
 
-@Controller
+@RestController
 @RequestMapping(value = "/server")
 public class ServerController {
     private IServerService serverService;
@@ -24,14 +25,12 @@ public class ServerController {
 
     @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/saveServerInfos")
-    public ResponseMessage<Server>fetchAndStore(@RequestBody Server server) throws SocketException {
+    public ResponseEntity<?> fetchAndStore(@RequestBody Server server) throws SocketException {
         server.setBankUniqueCode(server.getBankUniqueCode());
         server.setValidityDate(server.getValidityDate());
         server.setExtrationDate(new Date());
 
         // Call the service method with the Server entity
-        ResponseMessage<Server> response = serverService.fetchServerInfos(server);
-
-        return new  ResponseMessage<>(response.getStatusCode(), response.getMessage(), server);
+        return ResponseEntity.ok(serverService.fetchServerInfos(server));
     }
 }

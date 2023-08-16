@@ -1,0 +1,70 @@
+.content-center{
+    display: grid;
+    justify-content: center;
+    align-items: center;
+}
+.container{
+    background-color: white !important;
+    display: flex;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+.row-form{
+    flex: 5;
+}
+.header{
+   width: 100%;
+}
+.heade-title{
+    font-weight: bold !important;
+    font-size: 40px;
+    color: lightgray;
+}
+.form-wrapper{
+    width: 100%;
+    height: calc(100vh - 100);
+}
+.form-input-wrapper{
+    height:30px;
+    width: 50vh;
+    border: 2px solid;
+    border-radius: 10px;
+    padding: 10px;
+    outline: none;
+    margin-top: 10px;
+}
+.input{
+    border: none;
+    outline: none;
+    width: 100%;
+    height: 100%;
+    background-color: transparent;
+    font-weight: bold;
+}
+.button-wrapper{
+    height: 40px;
+    width: 100%;
+    cursor: pointer;
+    margin-top: 10px;
+    background-color: #241E8A;
+    border-radius: 10px;
+}
+.button-wrapper-item{
+    height: 100%;
+    width: 100%;
+    cursor: pointer;
+    font-weight: bold;
+    border-radius: 10px;
+    border: none;
+    background-color: transparent;
+    color: white;
+}
+
+/*---------------------Row picture-------------------------------------------*/
+.row-picture{
+    flex: 7;
+    height: 100vh;
+    box-shadow: 1px 0 3px 0;
+}
+.image-side{
+    margin: 10px;
+}

@@ -1,12 +1,14 @@
 import { useState} from 'react'
 import React from 'react'
 import axios from 'axios'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import './style.css'
 
 const Home = () => {
   const navigate = useNavigate();
   const [bankUniqueCode, setBankUniqueCode] = useState("");
   const [validityDate, setValidityDate] = useState("");
+  const [generatedLicense, setGeneratedLicense] = useState("");
   const currentDate = new Date();
   const handleSubmit = async(e) => {
     e.preventDefault()
@@ -19,10 +21,13 @@ const Home = () => {
         };
         
         const response = await axios.post("http://localhost:8081/server/saveServerInfos",server);
-        console.log("data saved uniquecode ", bankUniqueCode);
-        console.log("data saved validity date ", validityDate);
-        console.log("data saved", response);
-        navigate("/license");
+        setBankUniqueCode(" ");
+        setValidityDate(" ")
+        setGeneratedLicense(response.data);
+        navigate("/license", { state: response.data}
+    );
+
+      //navigate("/license");
       } catch (error) {
         console.log(error);
       }
@@ -31,33 +36,47 @@ const Home = () => {
     }
   }
   return (
-    <div className='bg-black text-red-400'>
-      <div>ASk for License</div>
-      <form action="" id="login" method="post" onSubmit={handleSubmit}>
-        <div className="item">
-          <label htmlFor="bankUniqueCode"> Code unique de la banque </label>
-          <input
-            type="text"
-            name="bankUniqueCode"
-            id="bankUniqueCode"
-            value={bankUniqueCode}
-            onChange={e => setBankUniqueCode(e.target.value)}
-          />
+    <div className='container'>
+      <div className="row row-form">
+        <div className="header">
+          <p className='heade-title'>Get the licence</p>
         </div>
-        <div className="item">
-          <label htmlFor="validityDate"> Date expiration </label>
-          <input
-            type="date"
-            name="validityDate"
-            id="validityDate"
-            value={validityDate}
-            onChange={e => setValidityDate(e.target.value)}
-          />
+        <div className="form-wrapper content-center">
+          <form action="" className="form-wrapper-form-group" id="serer-log" method="post" onSubmit={handleSubmit}>
+            <div className="form-input-wrapper">
+              <input
+                placeholder='Bank Unique Number'
+                type="text"
+                name="bankUniqueCode"
+                id="bankUniqueCode"
+                value={bankUniqueCode}
+                onChange={e => setBankUniqueCode(e.target.value)}
+                className='bankUniqueCode input'
+              />
+            </div>
+            <div className="form-input-wrapper">
+              <input
+                placeholder='Date expiration'
+                type="date"
+                name="validityDate"
+                id="validityDate"
+                value={validityDate}
+                className='expiration-date input'
+                onChange={e => setValidityDate(e.target.value)}
+              />
+            </div>
+            <div className="button-wrapper">
+              <input type="submit" className='button-wrapper-item' value="get the licence" />
+            </div>
+            <Link to="/license-verification" className="LicenceVerificationLink"> <p>I have a liecence</p></Link>
+          </form>
         </div>
-        <div className="item">
-          <input type="submit" value="Login" />
+      </div>
+      <div className="row row-picture">
+        <div className="image-side">
+          <img src="./undraw_certification_re_ifll.svg" alt="" />
         </div>
-      </form>
+      </div>
     </div>
   )
 }

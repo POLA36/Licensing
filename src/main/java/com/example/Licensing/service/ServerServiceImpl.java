@@ -1,8 +1,7 @@
 package com.example.Licensing.service;
 
-import ch.qos.logback.core.util.SystemInfo;
 import com.example.Licensing.ReponseMessage.ResponseMessage;
-import com.example.Licensing.model.dto.ServerDTO;
+import com.example.Licensing.model.entitie.Admin;
 import com.example.Licensing.model.entitie.License;
 import com.example.Licensing.model.entitie.Server;
 import com.example.Licensing.repository.LicenceRepo;
@@ -10,8 +9,6 @@ import com.example.Licensing.repository.ServerRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import oshi.hardware.CentralProcessor;
-import oshi.hardware.HardwareAbstractionLayer;
 
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -20,7 +17,6 @@ import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Enumeration;
-import java.util.List;
 
 /*@Licensing (c) 2023 PKFOKAM RESEARCH CENTER
  * @author LITA POLA ABDEL AZIZ - litapo489@gmail.com
@@ -37,7 +33,7 @@ public class ServerServiceImpl implements IServerService {
     }
 
     @Override
-    public ResponseMessage<Server> fetchServerInfos(Server server) throws SocketException {
+    public String fetchServerInfos(Server server) throws SocketException {
         try {
             // Fetch MAC Address
             Enumeration<NetworkInterface> networkInterfaces = NetworkInterface.getNetworkInterfaces();
@@ -69,6 +65,9 @@ public class ServerServiceImpl implements IServerService {
             // Set the expiration date based on the user input from serverDTO
             Date expirationDate = server.getValidityDate();
 
+            // Calculate the number of days left
+            int numberOfDaysLeft = calculateNumberOfDaysLeft(expirationDate);
+
             // Generate the license key based on the server information
             String licenseKey = generateLicenseKey(server);
 
@@ -77,14 +76,20 @@ public class ServerServiceImpl implements IServerService {
             licence.setLicenceKey(licenseKey);
             licence.setGenreratedDate(new Date());
             licence.setExpirationDate(expirationDate);
-            licenceRepo.save(licence);
-            serverRepo.save(server);
+
+            Server fetchExistingServer = serverRepo.findByMacAdresse(server.getMacAdresse());
+            if (fetchExistingServer == null) {
+                licenceRepo.save(licence);
+                serverRepo.save(server);
+                return licenseKey;
+            } else {
+                return "Server information already exists.";
+            }
             // Return success response with the populated server information
-            return new ResponseMessage(HttpStatus.OK,"UServer infos fetch successfully",server);
         } catch (UnknownHostException e) {
             e.printStackTrace();
             // Return error response if an exception occurs
-            return new ResponseMessage(HttpStatus.BAD_REQUEST,"Error occurred while fetching server information");
+            return "Error occurred while generating key";
         }
     }
 
@@ -94,9 +99,11 @@ public class ServerServiceImpl implements IServerService {
         String bankUniqueCode = server.getBankUniqueCode();
         Date validityDate = server.getValidityDate();
         Date extractionDate = server.getExtrationDate();
+        String macAdresse = server.getMacAdresse();
+        String ipAdresse = server.getIpAdresse();
 
         // Generate license key using a combination of server information
-        String licenseKey = bankUniqueCode + "_" + formatDate(validityDate) + "_" + formatDate(extractionDate);
+        String licenseKey = bankUniqueCode + "_" + formatDate(validityDate) +  "_" + macAdresse + "_" + ipAdresse +"_" + formatDate(extractionDate);
 
         return licenseKey;
     }
@@ -105,5 +112,14 @@ public class ServerServiceImpl implements IServerService {
     public String formatDate(Date date) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         return dateFormat.format(date);
+    }
+
+    @Override
+    public int calculateNumberOfDaysLeft(Date expirationDate) {
+        // Calculate the number of days left based on the current date and expiration date
+        Date currentDate = new Date();
+        long differenceInMillis = expirationDate.getTime() - currentDate.getTime();
+        long numberOfDaysLeft = differenceInMillis / (24 * 60 * 60 * 1000);
+        return (int) numberOfDaysLeft;
     }
 }

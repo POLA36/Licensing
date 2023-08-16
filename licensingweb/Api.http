@@ -2,6 +2,6 @@ POST http://localhost:8081/server/saveServerInfos
 content-type: application/json
 
 {
-    "bankUniqueCode":"344",
-    "validityDate":"2023-06-30T00:00:00Z",
+    "bankUniqueCode": "344",
+    "validityDate": "2023-07-30"
 }

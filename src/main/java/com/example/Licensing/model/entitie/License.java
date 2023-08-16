@@ -17,9 +17,12 @@ public class License {
     private String licenceKey;
     private Date expirationDate;
     private Date genreratedDate;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "admin_id")
-    private Admin admin;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "server_id")
+    private Server server;
+
+    private Integer daysLeft=0;
 
     public void setId(Long id) {
         this.id = id;
@@ -53,35 +56,44 @@ public class License {
         this.genreratedDate = genreratedDate;
     }
 
-    public Admin getAdmin() {
-        return admin;
+    public Server getServer() {
+        return server;
     }
 
-    public void setAdmin(Admin admin) {
-        this.admin = admin;
+    public void setServer(Server server) {
+        this.server = server;
+    }
+
+    public Integer getDaysLeft() {
+        return daysLeft;
+    }
+
+    public void setDaysLeft(Integer daysLeft) {
+        this.daysLeft = daysLeft;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        License licence = (License) o;
-        return Objects.equals(id, licence.id) && Objects.equals(licenceKey, licence.licenceKey) && Objects.equals(expirationDate, licence.expirationDate) && Objects.equals(genreratedDate, licence.genreratedDate) && Objects.equals(admin, licence.admin);
+        License license = (License) o;
+        return Objects.equals(id, license.id) && Objects.equals(licenceKey, license.licenceKey) && Objects.equals(expirationDate, license.expirationDate) && Objects.equals(genreratedDate, license.genreratedDate) && Objects.equals(server, license.server) && Objects.equals(daysLeft, license.daysLeft);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, licenceKey, expirationDate, genreratedDate, admin);
+        return Objects.hash(id, licenceKey, expirationDate, genreratedDate, server, daysLeft);
     }
 
     @Override
     public String toString() {
-        return "Licence{" +
+        return "License{" +
                 "id=" + id +
                 ", licenceKey='" + licenceKey + '\'' +
                 ", expirationDate=" + expirationDate +
                 ", genreratedDate=" + genreratedDate +
-                ", admin=" + admin +
+                ", server=" + server +
+                ", daysLeft=" + daysLeft +
                 '}';
     }
 }

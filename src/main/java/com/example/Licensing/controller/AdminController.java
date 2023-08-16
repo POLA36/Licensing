@@ -4,16 +4,16 @@ import com.example.Licensing.ReponseMessage.ResponseMessage;
 import com.example.Licensing.model.entitie.Admin;
 import com.example.Licensing.service.IAdminService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /*@Licensing (c) 2023 PKFOKAM RESEARCH CENTER
  * @author LITA POLA ABDEL AZIZ - litapo489@gmail.com
  * */
 
-@Controller
+@RestController
 @RequestMapping(value = "/admin")
 public class AdminController {
     private IAdminService adminService;
